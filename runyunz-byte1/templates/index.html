@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>05837 Byte-1: Displaying an RSS Feed</title>
+
+		<!-- Bootstrap core CSS -->
+    	<link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet">
+
+	    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+	</head>
+	
+	<body>
+		<div class="container">
+			<div class="header">
+				<ul class="nav nav-pills pull-right">
+					<li class="active">
+						<a href="http://pipes.yahoo.com/pipes/pipe.info?_id=5506c160ff35901c6c603eebbe8e7eb4">Pipe</a>
+					</li>
+					<li>
+						<a href="http://data.cmubi.org/assignments/byte1displayinganrssfeed">Tutorial</a>
+					</li>
+					<li>
+						<a href="mailto:runyun.zhang@gmail.com">Contact</a>
+					</li>
+				</ul>
+				<h3 class="text-muted">Byte 1: Displaying an RSS Feed</h3>
+			</div>
+
+			<div class="jumbotron">
+		        <h2>Latest movies: what to watch?</h2>
+		        <p class="lead"> <small> You can use the application to collect various information about <strong>recent and incoming</strong> movies that interest you, including storyline, rating, trailors, review, and news.</small> </p>
+	    	    
+	    	    <form role="form" action="search" method="POST">
+			    	<input name="search_term" class="form-control" type="text" placeholder={{search}} required autofocus>
+			        <button class="btn btn-xs btn-success" type="submit">Search</button>
+		      	</form>
+	      	</div>
+
+			<h3>Searching for {{search}}</h3> 
+			<h5><span class="badge">{{count}}</span> results found:</h5>
+			{% for item in feed %}
+				<div class="jumbotron">
+					<h3><a href="{{ item.link }}">{{ item.title }}</a></h3>
+					<p>{{item.description|safe}}</p>
+				</div>
+			{% endfor %}
+
+			{% if not count%}
+				<div class="alert alert-warning">
+					<p> Note: If no result comes up, it might be the case that this application focuses on tracking recently released and coming soon movies. Feel tree to try again with a fresh one :-) </p>
+					<p> Visit <a href="http://www.rottentomatoes.com//">Rotten Tomatoes</a> or <a href="http://www.imdb.com/">IMDB</a> for more information about latest movies. </p>
+				</div>
+			{% endif %}
+
+			<div class="footer">
+				<p>&copy; Runyun Zhang 2014</p>
+			</div>
+
+	</div>
+	</body>
+</html>
