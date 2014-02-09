@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.arc path {
+  stroke: #fff;
+}
+
+.arc path:hover {
+        stroke: white;
+        stroke-width: 4;
+}
+
+#tooltip {
+        position: absolute;
+        width: 200px;
+        height: auto;
+        padding: 10px;
+        background-color: white;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        border-radius: 10px;
+        -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+        pointer-events: none;
+}
+
+#tooltip.hidden {
+        display: none;
+}
+
+#tooltip p {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 16px;
+        line-height: 20px;
+}
+
+.title {
+  font: 300 78px Helvetica Neue;
+  fill: #666;
+}
+
+</style>
+<body>
+	<div id="tooltip" class="hidden">
+       <p><strong>Number of Animals:</strong></p>
+       <p><span id="value">100</span></p>
+  </div>
+  <div align="right">
+    <a class="link" href="/">back</a>
+  </div> 
+<script src="d3/d3.v3.js"></script>
+<script>
+var sum = 0;
+
+var data = [{'OutcomeType':'Adopted', 'DOG': 2120}, {'OutcomeType': 'Euthanized', 'DOG': 2758}, {'OutcomeType': 'Foster', 'DOG': 257}, {'OutcomeType': 'Returned to Owner', 'DOG': 1574}, {'OutcomeType': 'Transferred to Rescue Group', 'DOG': 2419}, {'OutcomeType': 'Other', 'DOG': 507}]
+var label = ['Adopted', 'Euthanized', 'Foster', 'Returned to Owner', 'Transferred to Rescue Group', 'Other'];
+
+data.forEach(function(d){
+	d.percent = d.DOG;//label.map(function(name))
+	sum += d.DOG;
+	// d.percent.forEach(function(d){d/=sum;});
+});
+
+data.forEach(function(d){
+	d.percent = Math.round(d.percent/sum * 100) + "%"; 
+});
+
+var width = 960,
+    height = 500,
+    radius = Math.min(width, height) / 2;
+
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c"])//, "#ff8c00"])
+	
+var arc = d3.svg.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(0);
+
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) { return d.DOG; });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var g = svg.selectAll(".arc")
+      .data(pie(data))
+    .enter().append("g")
+      .attr("class", "arc")
+         .on("mouseover", function(d) {
+       //Get this bar's x/y values, then augment for the tooltip
+       // var xPosition = parseFloat(d3.select(this.parentNode).attr("x_position")) + 
+       //     x_scale.rangeBand() / 2;
+       // var yPosition = parseFloat(d3.select(this).attr("y")) + 14;
+
+       // //Update the tooltip position and value
+       d3.select("#tooltip")
+           // .style("left", width - 300)
+           // .style("top", 300)
+           .select("#value")
+           .text(d.data.DOG + " dogs were " + d.data.OutcomeType + ".");
+
+       // //Show the tooltip (it's a div that is otherwise always hidden)
+       d3.select("#tooltip").classed("hidden", false);
+       // alert("aa");
+    })
+// and cause it to disappear when the mouse exits 
+  .on("mouseout", function(d) {
+       d3.select("#tooltip").classed("hidden", true)
+   });
+
+g.append("path")
+      .attr("d", arc)
+      .style("fill", function(d, i) { return color(d.data.OutcomeType); });
+
+g.append("text")
+      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+      .attr("dy", ".35em")
+      .style("text-anchor", "middle")
+      .style("fill", "white")
+      .style("font-size", "1.2em")
+      .text(function(d) { return d.data.percent; });
+
+var legend = svg.selectAll(".legend")
+    // our data is the array of colors we created earlier
+    .data(color.domain())//.slice().reverse())
+ .enter().append("g")
+    .attr("class", "legend")
+    .attr("transform", function(d, i) { return "translate(0," + i * 30 + ")"; })
+
+// fill it with 18 x 18 rectangles in the colors
+legend.append("rect")
+      .attr("x", 400)
+      .attr("width", 18)
+      .attr("height", 18)
+      // .attr("class", "label")
+      // .attr("id", function(d){return d;})
+      .style("fill", color)
+      .style("fill-opacity", .6)
+
+// and add text 
+legend.append("text")
+   .attr("x", 400)
+   .attr("y", 10)
+   .attr("dy", ".35em")
+   .style("text-anchor", "end")
+   .text(function(d) { return d; });
+
+svg.append("text")
+        .attr("x", width/2-200)             
+        .attr("y", height/2-400)
+        .attr("class", "title")
+        .text("Dog");
+</script>
