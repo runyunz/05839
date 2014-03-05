@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Bootstrap core CSS -->
+  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+  <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">  
+  <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">      
+  <link href="stylesheets/d3.css" rel="stylesheet" type="text/css">
+  <meta charset="UTF-8">
+  <title>Data Pipeline Project Byte 4 -- Mobile Data</title>
+</head>
+ <body>
+   <h1 class="page-header">Data Pipeline Project Byte 4</h1>
+   <section>
+    <h2 class="sub-header">Part A: Record Statics</h2>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+          <th>Date</th>
+          <th>Records</th>
+          </tr>
+        </thead>
+          <tbody class="table-hover">
+          {% for item in records %}
+          <tr>
+            <td>{{item.date}}</td>
+            <td>{{item.count}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+     <div>
+   </section>
+   <section>
+    <h2 class="sub-header">Part B: Activity Statics</h2>
+
+    {% for item in activities %}
+    <div class="table-responsive">
+      <h3> {{item.location}} </h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Activity</th>
+            <th>Span</th>
+          </tr>
+        </thead>
+          <tbody class="table-hover">
+          {% for res in item.results %}
+          <tr>
+            <td>{{res.activity}}</td>
+            <td>{{res.span}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+     <div>
+    {% endfor %}
+   </section>
+ </body>
+</html>
